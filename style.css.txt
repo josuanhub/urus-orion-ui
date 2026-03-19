@@ -1,0 +1,114 @@
+body {
+  margin: 0;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  text-align: center;
+  padding: 15px;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.logo {
+  font-size: 20px;
+  color: gold;
+  font-weight: bold;
+}
+
+.sub {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.message {
+  margin-bottom: 18px;
+  display: flex;
+}
+
+.user {
+  justify-content: flex-end;
+}
+
+.orion {
+  justify-content: flex-start;
+}
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 70%;
+  line-height: 1.4;
+}
+
+.user .bubble {
+  background: gold;
+  color: black;
+}
+
+.orion .bubble {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+}
+
+.meta {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+.loader {
+  text-align: center;
+  padding: 10px;
+  font-size: 13px;
+  color: gold;
+  animation: pulse 1.2s infinite;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.input-bar {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #1f1f1f;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  background: #111;
+  border: none;
+  color: white;
+  border-radius: 8px;
+}
+
+button {
+  margin-left: 10px;
+  padding: 12px 16px;
+  background: gold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}

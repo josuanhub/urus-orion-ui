@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>URUS — ORION</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <div class="logo">URUS</div>
+    <div class="sub">ORION SYSTEM</div>
+  </div>
+
+  <div id="chat" class="chat"></div>
+
+  <div id="loader" class="loader hidden">
+    ORION está pensando...
+  </div>
+
+  <div class="input-bar">
+    <input id="input" placeholder="Habla con ORION..." />
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
