@@ -12,7 +12,7 @@ async function sendMessage() {
   loader.classList.remove("hidden");
 
   try {
-    const res = await fetch("https://urus-backend-production.up.railway.app/v1/moltbook/message", {
+    const res = await fetch("/api/v1/moltbook/message"
       method: "POST",
       headers: {
         "Content-Type": "application/json"
