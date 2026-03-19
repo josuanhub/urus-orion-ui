@@ -12,16 +12,16 @@ async function sendMessage() {
   loader.classList.remove("hidden");
 
   try {
-    const res = await fetch("/api/v1/moltbook/message"
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        to: "ORION",
-        message: text
-      })
-    });
+    const res = await fetch("/api/v1/moltbook/message", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    to: "ORION",
+    message: text
+  })
+});
 
     const data = await res.json();
     const reply = data?.output?.reply || "Sin respuesta";
