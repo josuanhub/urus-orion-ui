@@ -6,7 +6,7 @@ document.getElementById("input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
-// FUNCIÓN PRINCIPAL
+// ENVIAR
 window.sendMessage = async function () {
   const input = document.getElementById("input");
   const text = input.value.trim();
@@ -34,13 +34,7 @@ window.sendMessage = async function () {
 
     loader.classList.add("hidden");
 
-    const meta = {
-      agents: "multi-agent",
-      status: "approved",
-      time: "real-time"
-    };
-
-    typeMessage(reply, meta, true); // 🔥 ahora habla
+    typeMessage(reply);
 
   } catch (err) {
     loader.classList.add("hidden");
@@ -48,8 +42,8 @@ window.sendMessage = async function () {
   }
 };
 
-// MENSAJE NORMAL
-function addMessage(type, text, meta = null) {
+// MENSAJE USER
+function addMessage(type, text) {
   const wrapper = document.createElement("div");
   wrapper.className = `message ${type}`;
 
@@ -58,13 +52,12 @@ function addMessage(type, text, meta = null) {
   bubble.innerText = text;
 
   wrapper.appendChild(bubble);
-
   chat.appendChild(wrapper);
   chat.scrollTop = chat.scrollHeight;
 }
 
-// ✨ EFECTO ESCRIBIENDO + VOZ
-function typeMessage(text, meta, speak = false) {
+// ✨ ESCRITURA LIMPIA + BOTÓN VOZ
+function typeMessage(text) {
   const wrapper = document.createElement("div");
   wrapper.className = "message orion";
 
@@ -73,7 +66,7 @@ function typeMessage(text, meta, speak = false) {
 
   wrapper.appendChild(bubble);
 
-  // 🔊 botón replay voz
+  // botón voz (NO autoplay)
   const voiceBtn = document.createElement("button");
   voiceBtn.innerText = "🔊";
   voiceBtn.className = "voice-btn";
@@ -91,16 +84,6 @@ function typeMessage(text, meta, speak = false) {
       i++;
       chat.scrollTop = chat.scrollHeight;
       setTimeout(typing, 12);
-    } else {
-      if (meta) {
-        const metaDiv = document.createElement("div");
-        metaDiv.className = "meta";
-        metaDiv.innerText =
-          `Agentes: ${meta.agents} • Estado: ${meta.status} • Tiempo: ${meta.time}`;
-        wrapper.appendChild(metaDiv);
-      }
-
-      if (speak) speakText(text); // 🔥 habla al terminar
     }
   }
 
@@ -117,17 +100,13 @@ window.startVoice = function () {
   recognition.onresult = function (event) {
     const text = event.results[0][0].transcript;
     document.getElementById("input").value = text;
-    sendMessage();
   };
 };
 
-// 🔊 TEXTO → VOZ (ORION habla)
+// 🔊 TEXTO → VOZ (solo cuando presionas)
 function speakText(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "es-ES";
-  utterance.rate = 1;
-  utterance.pitch = 1;
-
-  speechSynthesis.cancel(); // corta si ya estaba hablando
+  speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
 }
