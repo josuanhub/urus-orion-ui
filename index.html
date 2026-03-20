@@ -1,65 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>URUS — ORION</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<title>URUS — ORION</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="app">
 
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">URUS</div>
+
+    <div class="panel">
+      <div class="title">Agentes</div>
+      <div id="agents"></div>
+    </div>
+
+    <div class="panel">
+      <div class="title">Insights</div>
+      <div id="insights"></div>
+    </div>
+
+    <div class="panel">
+      <div class="title">Estado</div>
+      <div id="status"></div>
+    </div>
+
+    <div class="panel">
+      <div class="title">Audit</div>
+      <div id="audit"></div>
+    </div>
+  </div>
+
   <!-- MAIN -->
   <div class="main">
 
-    <!-- CHAT -->
-    <div class="chat-container">
-      <div class="header">
-        <div class="logo">URUS</div>
-        <div class="sub">ORION SYSTEM</div>
-      </div>
+    <div class="chat" id="chat"></div>
 
-      <div id="chat" class="chat"></div>
-
-      <div id="loader" class="loader hidden">
-        <span></span><span></span><span></span>
-      </div>
-
-      <div class="input-bar">
-        <input id="input" placeholder="Habla con ORION..." />
-        <button onclick="sendMessage()">Enviar</button>
-      </div>
+    <div class="loader hidden" id="loader">
+      <span></span><span></span><span></span>
     </div>
 
-    <!-- SIDEBAR DASHBOARD -->
-    <div class="sidebar">
-
-      <div class="panel">
-        <h3>Agentes</h3>
-        <div id="agents"></div>
-      </div>
-
-      <div class="panel">
-        <h3>Insights</h3>
-        <div id="insights"></div>
-      </div>
-
-      <div class="panel">
-        <h3>Estado</h3>
-        <div id="status"></div>
-      </div>
-
-      <div class="panel">
-        <h3>Audit</h3>
-        <div id="audit"></div>
-      </div>
-
+    <div class="input-bar">
+      <input id="input" placeholder="Habla con ORION..." />
+      <button onclick="startVoice()">🎤</button>
+      <button onclick="sendMessage()">Enviar</button>
     </div>
 
   </div>
 
 </div>
 
-<script src="./app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
