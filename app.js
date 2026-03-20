@@ -25,98 +25,94 @@ window.sendMessage = async function () {
   try {
     const res = await fetch("/api/v1/moltbook/message", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        to: "ORION",
-        message: text
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ to: "ORION", message: text })
     });
 
     const data = await res.json();
-    const reply = data?.output?.reply || "Sin respuesta";
-
     loader.classList.add("hidden");
 
-    typeMessage(reply);
-
-    // 🔥 DASHBOARD DATA
+    typeMessage(data.output.reply);
     renderDashboard(data);
 
-  } catch (err) {
+  } catch {
     loader.classList.add("hidden");
-    addMessage("orion", "Error conectando al sistema");
+    addMessage("orion", "Error conectando");
   }
 };
 
 // CHAT
 function addMessage(type, text) {
-  const wrapper = document.createElement("div");
-  wrapper.className = `message ${type}`;
+  const msg = document.createElement("div");
+  msg.className = `message ${type}`;
 
   const bubble = document.createElement("div");
   bubble.className = "bubble";
   bubble.innerText = text;
 
-  wrapper.appendChild(bubble);
-  chat.appendChild(wrapper);
+  msg.appendChild(bubble);
+  chat.appendChild(msg);
   chat.scrollTop = chat.scrollHeight;
 }
 
 // TYPING
 function typeMessage(text) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "message orion";
+  const msg = document.createElement("div");
+  msg.className = "message orion";
 
   const bubble = document.createElement("div");
   bubble.className = "bubble";
 
-  wrapper.appendChild(bubble);
-  chat.appendChild(wrapper);
+  const btn = document.createElement("button");
+  btn.innerText = "🔊";
+  btn.className = "voice-btn";
+  btn.onclick = () => speak(text);
+
+  msg.appendChild(bubble);
+  msg.appendChild(btn);
+  chat.appendChild(msg);
 
   let i = 0;
-
-  function typing() {
+  function write() {
     if (i < text.length) {
-      bubble.innerText += text.charAt(i);
-      i++;
+      bubble.innerText += text[i++];
       chat.scrollTop = chat.scrollHeight;
-      setTimeout(typing, 10);
+      setTimeout(write, 10);
     }
   }
-
-  typing();
+  write();
 }
 
-// 🧠 DASHBOARD
+// VOICE
+function speak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "es-ES";
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+// MIC
+window.startVoice = function () {
+  const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  rec.lang = "es-ES";
+  rec.start();
+
+  rec.onresult = e => {
+    document.getElementById("input").value = e.results[0][0].transcript;
+  };
+};
+
+// DASHBOARD
 function renderDashboard(data) {
 
-  // AGENTES
   agentsDiv.innerHTML = "";
-  data.consulted_agents?.forEach(a => {
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerText = a.agent;
-    agentsDiv.appendChild(el);
-  });
-
-  // INSIGHTS
   insightsDiv.innerHTML = "";
+
   data.consulted_agents?.forEach(a => {
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerText = `${a.agent}: ${a.insight}`;
-    insightsDiv.appendChild(el);
+    agentsDiv.innerHTML += `<div>${a.agent}</div>`;
+    insightsDiv.innerHTML += `<div>${a.agent}: ${a.insight}</div>`;
   });
 
-  // ESTADO
-  statusDiv.innerHTML = `
-    <div class="item">Status: ${data.governance?.status}</div>
-  `;
-
-  // AUDIT (simple)
-  auditDiv.innerHTML = `
-    <div class="item">Mensaje procesado</div>
-  `;
+  statusDiv.innerHTML = `Status: ${data.governance?.status}`;
+  auditDiv.innerHTML = `Procesado correctamente`;
 }
