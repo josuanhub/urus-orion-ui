@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>URUS — Lead Dashboard</title>
+
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0b0b0b;
+  color: #fff;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 280px;
+  background: #111;
+  border-right: 1px solid #1f1f1f;
+  padding: 15px;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  font-size: 14px;
+  color: #888;
+}
+
+.lead {
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  background: #151515;
+  transition: 0.2s;
+}
+
+.lead:hover {
+  background: #1f1f1f;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 15px;
+  border-bottom: 1px solid #1f1f1f;
+  font-weight: bold;
+}
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* MESSAGES */
+.msg {
+  margin-bottom: 10px;
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.inbound {
+  background: #1f1f1f;
+}
+
+.outbound {
+  background: gold;
+  color: black;
+  margin-left: auto;
+}
+
+/* INPUT */
+.input {
+  display: flex;
+  border-top: 1px solid #1f1f1f;
+}
+
+input {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  outline: none;
+  background: #111;
+  color: white;
+}
+
+button {
+  padding: 15px;
+  border: none;
+  background: gold;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>LEADS</h2>
+    <div id="leads"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="header" id="leadName">
+      Selecciona un lead
+    </div>
+
+    <div id="chat" class="chat"></div>
+
+    <div class="input">
+      <input id="input" placeholder="Escribe..." />
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const BACKEND = "https://urus-backend-production.up.railway.app"
+
+let currentLead = null
+
+async function loadLeads() {
+  const res = await fetch(BACKEND + "/v1/wa/leads")
+  const leads = await res.json()
+
+  const container = document.getElementById("leads")
+  container.innerHTML = ""
+
+  leads.forEach(l => {
+    const div = document.createElement("div")
+    div.className = "lead"
+    div.innerText = l.name || l.phone || "Lead"
+    div.onclick = () => selectLead(l)
+    container.appendChild(div)
+  })
+}
+
+async function selectLead(lead) {
+  currentLead = lead
+
+  document.getElementById("leadName").innerText =
+    lead.name || lead.phone
+
+  const res = await fetch(BACKEND + "/v1/wa/messages/" + lead.id)
+  const messages = await res.json()
+
+  const chat = document.getElementById("chat")
+  chat.innerHTML = ""
+
+  messages.forEach(m => {
+    const div = document.createElement("div")
+    div.className = "msg " + m.direction
+    div.innerText = m.body
+    chat.appendChild(div)
+  })
+
+  chat.scrollTop = chat.scrollHeight
+}
+
+async function sendMessage() {
+  const input = document.getElementById("input")
+  const text = input.value.trim()
+
+  if (!text || !currentLead) return
+
+  await fetch(BACKEND + "/v1/wa/message/" + currentLead.id, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message: text })
+  })
+
+  input.value = ""
+  selectLead(currentLead)
+}
+
+loadLeads()
+</script>
+
+</body>
+</html>
