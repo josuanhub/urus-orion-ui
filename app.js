@@ -1,12 +1,17 @@
 const chat = document.getElementById("chat");
 const loader = document.getElementById("loader");
 
+const agentsDiv = document.getElementById("agents");
+const insightsDiv = document.getElementById("insights");
+const statusDiv = document.getElementById("status");
+const auditDiv = document.getElementById("audit");
+
 // ENTER
 document.getElementById("input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
-// ENVIAR
+// SEND
 window.sendMessage = async function () {
   const input = document.getElementById("input");
   const text = input.value.trim();
@@ -36,13 +41,16 @@ window.sendMessage = async function () {
 
     typeMessage(reply);
 
+    // 🔥 DASHBOARD DATA
+    renderDashboard(data);
+
   } catch (err) {
     loader.classList.add("hidden");
     addMessage("orion", "Error conectando al sistema");
   }
 };
 
-// MENSAJE USER
+// CHAT
 function addMessage(type, text) {
   const wrapper = document.createElement("div");
   wrapper.className = `message ${type}`;
@@ -56,7 +64,7 @@ function addMessage(type, text) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-// ✨ ESCRITURA LIMPIA + BOTÓN VOZ
+// TYPING
 function typeMessage(text) {
   const wrapper = document.createElement("div");
   wrapper.className = "message orion";
@@ -65,15 +73,6 @@ function typeMessage(text) {
   bubble.className = "bubble";
 
   wrapper.appendChild(bubble);
-
-  // botón voz (NO autoplay)
-  const voiceBtn = document.createElement("button");
-  voiceBtn.innerText = "🔊";
-  voiceBtn.className = "voice-btn";
-  voiceBtn.onclick = () => speakText(text);
-
-  wrapper.appendChild(voiceBtn);
-
   chat.appendChild(wrapper);
 
   let i = 0;
@@ -83,30 +82,41 @@ function typeMessage(text) {
       bubble.innerText += text.charAt(i);
       i++;
       chat.scrollTop = chat.scrollHeight;
-      setTimeout(typing, 12);
+      setTimeout(typing, 10);
     }
   }
 
   typing();
 }
 
-// 🎤 VOZ → TEXTO
-window.startVoice = function () {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = "es-ES";
+// 🧠 DASHBOARD
+function renderDashboard(data) {
 
-  recognition.start();
+  // AGENTES
+  agentsDiv.innerHTML = "";
+  data.consulted_agents?.forEach(a => {
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerText = a.agent;
+    agentsDiv.appendChild(el);
+  });
 
-  recognition.onresult = function (event) {
-    const text = event.results[0][0].transcript;
-    document.getElementById("input").value = text;
-  };
-};
+  // INSIGHTS
+  insightsDiv.innerHTML = "";
+  data.consulted_agents?.forEach(a => {
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerText = `${a.agent}: ${a.insight}`;
+    insightsDiv.appendChild(el);
+  });
 
-// 🔊 TEXTO → VOZ (solo cuando presionas)
-function speakText(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "es-ES";
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utterance);
+  // ESTADO
+  statusDiv.innerHTML = `
+    <div class="item">Status: ${data.governance?.status}</div>
+  `;
+
+  // AUDIT (simple)
+  auditDiv.innerHTML = `
+    <div class="item">Mensaje procesado</div>
+  `;
 }
