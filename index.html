@@ -9,21 +9,53 @@
 
 <div class="app">
 
-  <div class="header">
-    <div class="logo">URUS</div>
-    <div class="sub">ORION SYSTEM</div>
-  </div>
+  <!-- MAIN -->
+  <div class="main">
 
-  <div id="chat" class="chat"></div>
+    <!-- CHAT -->
+    <div class="chat-container">
+      <div class="header">
+        <div class="logo">URUS</div>
+        <div class="sub">ORION SYSTEM</div>
+      </div>
 
-  <div id="loader" class="loader hidden">
-    <span></span><span></span><span></span>
-  </div>
+      <div id="chat" class="chat"></div>
 
-  <div class="input-bar">
-    <input id="input" placeholder="Habla con ORION..." />
-    <button onclick="startVoice()">🎤</button>
-    <button onclick="sendMessage()">Enviar</button>
+      <div id="loader" class="loader hidden">
+        <span></span><span></span><span></span>
+      </div>
+
+      <div class="input-bar">
+        <input id="input" placeholder="Habla con ORION..." />
+        <button onclick="sendMessage()">Enviar</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR DASHBOARD -->
+    <div class="sidebar">
+
+      <div class="panel">
+        <h3>Agentes</h3>
+        <div id="agents"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Insights</h3>
+        <div id="insights"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Estado</h3>
+        <div id="status"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Audit</h3>
+        <div id="audit"></div>
+      </div>
+
+    </div>
+
   </div>
 
 </div>
